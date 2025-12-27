@@ -7,19 +7,31 @@ from utils import data_manager
 
 class RecordWindow:
     def __init__(self, parent):
-        self.parent = parent
-        
-        self.window = tk.Toplevel(parent)
-        self.window.title("新增健康記錄")
-        self.window.geometry("450x600")
-        self.window.transient(parent)
-        self.window.grab_set()
-        
-        # 居中顯示
-        self.center_window()
-        
-        self.create_widgets()
-        self.set_default_datetime()
+        try:
+            self.parent = parent
+            
+            self.window = tk.Toplevel(parent)
+            self.window.title("新增健康記錄")
+            self.window.geometry("450x600")
+            self.window.transient(parent)
+            self.window.grab_set()
+            
+            # 居中顯示
+            self.center_window()
+            
+            self.create_widgets()
+            self.set_default_datetime()
+            
+            # 確保視窗顯示
+            self.window.lift()
+            self.window.focus_force()
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            messagebox.showerror("錯誤", f"創建記錄視窗時發生錯誤：{e}")
+            if hasattr(self, 'window'):
+                self.window.destroy()
+            raise
     
     def center_window(self):
         """將視窗居中顯示"""
@@ -41,20 +53,8 @@ class RecordWindow:
         )
         title_label.pack()
         
-        # 輸入框架（使用Canvas和Scrollbar以支持滾動）
-        canvas = tk.Canvas(self.window)
-        scrollbar = tk.Scrollbar(self.window, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas)
-        
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-        
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-        
-        input_frame = tk.Frame(scrollable_frame, padx=30, pady=20)
+        # 輸入框架（使用Frame，如果內容過多可以添加滾動條）
+        input_frame = tk.Frame(self.window, padx=30, pady=20)
         input_frame.pack(fill="both", expand=True)
         
         # 日期
@@ -214,9 +214,6 @@ class RecordWindow:
             font=("Microsoft YaHei", 9),
             fg="gray"
         ).grid(row=7, column=2, sticky="w")
-        
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
         
         # 按鈕框架
         button_frame = tk.Frame(self.window, pady=20)

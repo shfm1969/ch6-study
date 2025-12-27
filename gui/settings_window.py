@@ -11,15 +11,15 @@ class SettingsWindow:
         
         self.window = tk.Toplevel(parent)
         self.window.title("用戶設定")
-        self.window.geometry("400x300")
+        self.window.geometry("450x380")
         self.window.transient(parent)
         self.window.grab_set()
         
-        # 居中顯示
-        self.center_window()
-        
         self.create_widgets()
         self.load_settings()
+        
+        # 在創建組件後居中顯示
+        self.center_window()
     
     def center_window(self):
         """將視窗居中顯示"""
@@ -43,7 +43,7 @@ class SettingsWindow:
         
         # 輸入框架
         input_frame = tk.Frame(self.window, padx=30, pady=20)
-        input_frame.pack(fill="both", expand=True)
+        input_frame.pack(fill="x", padx=10, pady=10)
         
         # 姓名
         tk.Label(
@@ -95,27 +95,33 @@ class SettingsWindow:
         
         # 按鈕框架
         button_frame = tk.Frame(self.window, pady=20)
-        button_frame.pack()
+        button_frame.pack(side="bottom", fill="x", padx=20, pady=10)
         
         # 保存按鈕
         save_btn = tk.Button(
             button_frame,
             text="保存",
             font=("Microsoft YaHei", 12),
-            width=10,
-            command=self.save_settings
+            width=12,
+            height=2,
+            command=self.save_settings,
+            bg="#4CAF50",
+            fg="white"
         )
-        save_btn.pack(side="left", padx=10)
+        save_btn.pack(side="left", padx=10, expand=True, fill="x")
         
         # 取消按鈕
         cancel_btn = tk.Button(
             button_frame,
             text="取消",
             font=("Microsoft YaHei", 12),
-            width=10,
-            command=self.window.destroy
+            width=12,
+            height=2,
+            command=self.window.destroy,
+            bg="#f44336",
+            fg="white"
         )
-        cancel_btn.pack(side="left", padx=10)
+        cancel_btn.pack(side="left", padx=10, expand=True, fill="x")
     
     def load_settings(self):
         """載入現有設定"""
@@ -126,31 +132,40 @@ class SettingsWindow:
     
     def save_settings(self):
         """保存設定"""
-        name = self.name_entry.get().strip()
-        height_str = self.height_entry.get().strip()
-        birthday = self.birthday_entry.get().strip()
-        
-        # 驗證身高
         try:
-            height = float(height_str) if height_str else 0
-            if height < 0:
-                raise ValueError("身高不能為負數")
-        except ValueError:
-            messagebox.showerror("錯誤", "請輸入有效的身高數值（cm）")
-            return
-        
-        # 保存設定
-        settings = {
-            "name": name,
-            "height": height,
-            "birthday": birthday
-        }
-        
-        if data_manager.save_user_settings(settings):
-            messagebox.showinfo("成功", "設定已保存")
-            if self.main_window:
-                self.main_window.refresh_user_info()
-            self.window.destroy()
-        else:
-            messagebox.showerror("錯誤", "保存設定失敗")
+            name = self.name_entry.get().strip()
+            height_str = self.height_entry.get().strip()
+            birthday = self.birthday_entry.get().strip()
+            
+            # 驗證身高
+            try:
+                height = float(height_str) if height_str else 0
+                if height < 0:
+                    raise ValueError("身高不能為負數")
+            except ValueError as e:
+                if "不能" in str(e):
+                    messagebox.showerror("錯誤", str(e))
+                else:
+                    messagebox.showerror("錯誤", "請輸入有效的身高數值（cm）")
+                return
+            
+            # 保存設定
+            settings = {
+                "name": name,
+                "height": height,
+                "birthday": birthday
+            }
+            
+            print(f"嘗試保存設定: {settings}")
+            if data_manager.save_user_settings(settings):
+                messagebox.showinfo("成功", "設定已保存")
+                if self.main_window:
+                    self.main_window.refresh_user_info()
+                self.window.destroy()
+            else:
+                messagebox.showerror("錯誤", "保存設定失敗，請檢查文件權限或磁盤空間")
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            messagebox.showerror("錯誤", f"保存設定時發生錯誤：{e}")
 

@@ -8,7 +8,7 @@ class MainWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("健康記錄管理系統")
-        self.root.geometry("500x400")
+        # 不在此處設置geometry，讓main.py處理位置
         
         # 存儲其他視窗的引用
         self.settings_window = None
@@ -17,6 +17,9 @@ class MainWindow:
         
         self.create_widgets()
         self.refresh_user_info()
+        
+        # 確保視窗內容已更新
+        self.root.update_idletasks()
     
     def create_widgets(self):
         """創建主視窗組件"""
@@ -37,7 +40,7 @@ class MainWindow:
             padx=20,
             pady=15
         )
-        info_frame.pack(pady=10, padx=20, fill="x")
+        info_frame.pack(pady=10, padx=20, fill="x", anchor="n")
         
         self.name_label = tk.Label(
             info_frame,
@@ -65,40 +68,46 @@ class MainWindow:
         
         # 功能按鈕框架
         button_frame = tk.Frame(self.root)
-        button_frame.pack(pady=20)
+        button_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
         # 設定按鈕
         settings_btn = tk.Button(
             button_frame,
             text="用戶設定",
             font=("Microsoft YaHei", 12),
-            width=15,
+            width=18,
             height=2,
-            command=self.open_settings
+            command=self.open_settings,
+            bg="#2196F3",
+            fg="white"
         )
-        settings_btn.pack(pady=10)
+        settings_btn.pack(pady=8, fill="x")
         
         # 新增記錄按鈕
         record_btn = tk.Button(
             button_frame,
             text="新增記錄",
             font=("Microsoft YaHei", 12),
-            width=15,
+            width=18,
             height=2,
-            command=self.open_record
+            command=self.open_record,
+            bg="#4CAF50",
+            fg="white"
         )
-        record_btn.pack(pady=10)
+        record_btn.pack(pady=8, fill="x")
         
         # 查看歷史按鈕
         history_btn = tk.Button(
             button_frame,
             text="查看歷史",
             font=("Microsoft YaHei", 12),
-            width=15,
+            width=18,
             height=2,
-            command=self.open_history
+            command=self.open_history,
+            bg="#FF9800",
+            fg="white"
         )
-        history_btn.pack(pady=10)
+        history_btn.pack(pady=8, fill="x")
     
     def refresh_user_info(self):
         """刷新用戶資訊顯示"""
@@ -115,23 +124,29 @@ class MainWindow:
     def open_settings(self):
         """打開設定視窗"""
         if self.settings_window is None or not self.settings_window.window.winfo_exists():
-            from gui.settings_window import SettingsWindow
+            from .settings_window import SettingsWindow
             self.settings_window = SettingsWindow(self.root, self)
         else:
             self.settings_window.window.lift()
     
     def open_record(self):
         """打開記錄輸入視窗"""
-        if self.record_window is None or not self.record_window.window.winfo_exists():
-            from gui.record_window import RecordWindow
-            self.record_window = RecordWindow(self.root)
-        else:
-            self.record_window.window.lift()
+        try:
+            if self.record_window is None or not self.record_window.window.winfo_exists():
+                from .record_window import RecordWindow
+                self.record_window = RecordWindow(self.root)
+            else:
+                self.record_window.window.lift()
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            from tkinter import messagebox
+            messagebox.showerror("錯誤", f"無法打開記錄輸入視窗：{e}")
     
     def open_history(self):
         """打開歷史記錄視窗"""
         if self.history_window is None or not self.history_window.window.winfo_exists():
-            from gui.history_window import HistoryWindow
+            from .history_window import HistoryWindow
             self.history_window = HistoryWindow(self.root)
         else:
             self.history_window.window.lift()

@@ -39,8 +39,12 @@ def save_user_settings(settings: Dict[str, any]) -> bool:
         ensure_data_dir()
         with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
             json.dump(settings, f, ensure_ascii=False, indent=2)
+        print(f"設定已保存到: {SETTINGS_FILE}")
         return True
-    except IOError:
+    except Exception as e:
+        print(f"保存設定失敗: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 
