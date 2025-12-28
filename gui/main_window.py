@@ -68,46 +68,46 @@ class MainWindow:
         
         # 功能按鈕框架
         button_frame = tk.Frame(self.root)
-        button_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        button_frame.pack(fill="x", padx=20, pady=20)
         
         # 設定按鈕
         settings_btn = tk.Button(
             button_frame,
             text="用戶設定",
             font=("Microsoft YaHei", 12),
-            width=18,
+            width=15,
             height=2,
             command=self.open_settings,
             bg="#2196F3",
             fg="white"
         )
-        settings_btn.pack(pady=8, fill="x")
+        settings_btn.pack(side="left", padx=5, expand=True, fill="both")
         
         # 新增記錄按鈕
         record_btn = tk.Button(
             button_frame,
             text="新增記錄",
             font=("Microsoft YaHei", 12),
-            width=18,
+            width=15,
             height=2,
             command=self.open_record,
             bg="#4CAF50",
             fg="white"
         )
-        record_btn.pack(pady=8, fill="x")
+        record_btn.pack(side="left", padx=5, expand=True, fill="both")
         
         # 查看歷史按鈕
         history_btn = tk.Button(
             button_frame,
             text="查看歷史",
             font=("Microsoft YaHei", 12),
-            width=18,
+            width=15,
             height=2,
             command=self.open_history,
             bg="#FF9800",
             fg="white"
         )
-        history_btn.pack(pady=8, fill="x")
+        history_btn.pack(side="left", padx=5, expand=True, fill="both")
     
     def refresh_user_info(self):
         """刷新用戶資訊顯示"""

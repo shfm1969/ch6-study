@@ -12,14 +12,15 @@ def main():
         print("主視窗已創建")
         
         # 設置視窗位置到屏幕中央
-        width = 550
-        height = 550
+        width = 700
+        height = 450
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
         x = (screen_width - width) // 2
         y = (screen_height - height) // 2
         root.geometry(f"{width}x{height}+{x}+{y}")
-        root.minsize(500, 500)  # 設置最小尺寸
+        root.minsize(600, 400)  # 設置最小尺寸
+        root.resizable(True, True)  # 允許調整大小
         
         # 防止視窗被意外關閉時立即退出
         root.protocol("WM_DELETE_WINDOW", lambda: root.quit())
